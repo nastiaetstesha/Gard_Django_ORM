@@ -4,9 +4,10 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import localtime
 
+from datacenter.utils import get_duration, format_duration, is_visit_long
+
 
 def passcard_info_view(request, passcode):
-    passcard = Passcard.objects.all()[0]
     passcard = get_object_or_404(Passcard, passcode=passcode)
 
     # Программируем здесь
@@ -17,10 +18,10 @@ def passcard_info_view(request, passcode):
         entered_local_time = localtime(visit.entered_at)
         entered_at_str = entered_local_time.strftime('%d-%m-%Y %H:%M')
         
-        duration_seconds = visit.get_duration()
-        formatted_duration = Visit.format_duration(duration_seconds)
+        duration_seconds = get_duration(visit)
+        formatted_duration = format_duration(duration_seconds)
 
-        is_strange = visit.is_visit_long() 
+        is_strange = is_visit_long(visit) 
         this_passcard_visits.append({
             'entered_at': entered_at_str,
             'duration': formatted_duration,
