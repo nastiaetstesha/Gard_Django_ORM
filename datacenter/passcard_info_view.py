@@ -16,11 +16,15 @@ def passcard_info_view(request, passcode):
     for visit in visits:
         entered_local_time = localtime(visit.entered_at)
         entered_at_str = entered_local_time.strftime('%d-%m-%Y %H:%M')
-        
-        duration_seconds = get_duration(visit)
+
+        leaved_local_time = None
+        if visit.leaved_at is not None:
+            leaved_local_time = localtime(visit.leaved_at)
+
+        duration_seconds = get_duration(entered_local_time, leaved_local_time)
         formatted_duration = format_duration(duration_seconds)
 
-        is_strange = is_visit_long(visit) 
+        is_strange = is_visit_long(entered_local_time, leaved_local_time)
         this_passcard_visits.append({
             'entered_at': entered_at_str,
             'duration': formatted_duration,
