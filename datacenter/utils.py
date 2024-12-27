@@ -1,15 +1,11 @@
 from django.utils.timezone import localtime
 
 
-def get_duration(entered_local_time, leaved_local_time):
-    if leaved_local_time is not None:
-        time_spent = leaved_local_time - entered_local_time
-    else:
-        current_time = localtime()
-        time_spent = current_time - entered_local_time
-
-    total_seconds = time_spent.total_seconds()
-    return total_seconds
+def get_duration(visit):
+    entered_local_time = localtime(visit.entered_at)
+    leaved_local_time = localtime(visit.leaved_at) if visit.leaved_at else localtime()
+    time_spent = leaved_local_time - entered_local_time
+    return time_spent.total_seconds()
 
 
 def format_duration(duration):
@@ -20,6 +16,6 @@ def format_duration(duration):
     return formatted_time
 
 
-def is_visit_long(entered_local_time, leaved_local_time):
-    duration = get_duration(entered_local_time, leaved_local_time)
+def is_visit_long(visit):
+    duration = get_duration(visit)
     return duration > 3600
